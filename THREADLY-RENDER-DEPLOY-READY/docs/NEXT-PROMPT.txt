@@ -1,0 +1,34 @@
+THREADLY — NEXT PROMPT (continue from CHECKPOINT-00-BASELINE)
+
+I am uploading the latest THREADLY ZIP. Do NOT start from scratch and do NOT rebuild anything that works.
+First read docs/CONTINUATION-STATUS.md and continue from that exact state.
+
+WORKFLOW RULES (unchanged)
+- Secure first: before editing, confirm the uploaded ZIP opens (unzip -t) and that `cd backend && npm test` still passes (30 tests at baseline).
+- Work in small checkpoints. After EACH one: run tests, update docs/CONTINUATION-STATUS.md and this file, build a COMPLETE project ZIP
+  (exclude node_modules, .env, secrets, caches), verify it with `unzip -t`, present the real file, then STOP and wait for me to confirm I received it.
+- Never claim a feature or a test result you did not actually produce. Never invent a download link.
+- Be honest about usage limits: if a limit is near, package the latest working version immediately.
+
+NEXT TASK: THREADLY-CHECKPOINT-01-PROJECT-AUDIT  (then CHECKPOINT-02-DATABASE)
+1. Add regression tests that FAIL on the current code, proving these verified bugs:
+   a. Bug 1 (critical): opening the same DB_FILE twice crashes with "table settings already exists" (backend/src/db.js).
+   b. Bug 2 (high): GET /api/orders/:no and POST /api/orders/:no/cancel work for an anonymous client and expose name/phone/address.
+2. Do not fix them in the same step as writing the tests; show me the failing results first.
+3. Package THREADLY-CHECKPOINT-01-PROJECT-AUDIT.zip, deliver it, and stop.
+
+THEN (CHECKPOINT-02-DATABASE), after I confirm:
+- Make openDb idempotent (CREATE TABLE IF NOT EXISTS, seed only when empty, versioned migrations) so a restart on DB_FILE works.
+- Fix Bug 2: owners/admins only for registered users' orders; for guest orders require a signed tracking token (or order number + phone). Ask me which guest policy I prefer if unsure.
+- Fix package.json engines to ">=22.5".
+- Re-run all tests; the new regression tests must now pass.
+
+STILL TO BUILD LATER (priority order): complete customer journey checks (run the frontend in a headless browser) ->
+admin product/variant/inventory editors -> suppliers, coupon admin, returns/refunds/support tickets, notifications ->
+PostgreSQL support + security hardening (rate limiting beyond login, audit logs, headers) -> full test pass -> final THREADLY-FASHION-MARKETPLACE.zip.
+
+RESUME COMMANDS
+  cd backend
+  $env:ADMIN_EMAIL="admin@example.com"; $env:ADMIN_PASSWORD="choose-a-password"
+  npm start   (Node 22.5+)
+  npm test

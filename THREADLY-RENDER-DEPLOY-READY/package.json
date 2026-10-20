@@ -1,0 +1,14 @@
+{
+  "name": "threadly",
+  "version": "0.2.0-render-ready",
+  "private": true,
+  "type": "module",
+  "description": "THREADLY demo fashion storefront + API, served as one Node.js app.",
+  "scripts": {
+    "build": "node scripts/verify-build.mjs",
+    "start": "node backend/src/server.js",
+    "test": "npm --prefix backend test",
+    "e2e": "node scripts/e2e-browser.mjs"
+  },
+  "engines": { "node": ">=22.13.0" }
+}

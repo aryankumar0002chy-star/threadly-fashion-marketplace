@@ -1,0 +1,36 @@
+# Render Blueprint for THREADLY: ONE web service = Node API + storefront on the same URL.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# PERSISTENCE NOTE: data lives in a SQLite file. Render's filesystem is wiped on every deploy/restart
+# unless a persistent disk is attached, and persistent disks need a PAID instance (not "free").
+# This blueprint therefore uses `starter` + a 1 GB disk. If you deliberately want a free, throw-away demo,
+# see README -> "Free-tier demo (no persistence)".
+services:
+  - type: web
+    name: threadly
+    runtime: node
+    plan: starter
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    disk:
+      name: threadly-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.2
+      - key: NODE_ENV
+        value: production
+      - key: APP_MODE
+        value: demo            # demo = simulated payment/shipping so checkout works. "production" disables them (checkout then returns 501).
+      - key: SUPPLIER_MODE
+        value: mock            # mock = simulated fulfilment. NO live supplier (incl. Weave365) is connected.
+      - key: DB_FILE
+        value: /var/data/threadly.db   # must be on the mounted disk
+      - key: ADMIN_EMAIL
+        sync: false            # Render asks for this when you create the Blueprint
+      - key: ADMIN_PASSWORD
+        sync: false            # Render asks for this; use 12+ random characters
+      - key: PAYMENT_WEBHOOK_SECRET
+        generateValue: true
